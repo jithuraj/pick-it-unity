@@ -5,18 +5,18 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 50;
+    public float speed = 100;
     private bool isRotatingClockwise = false;
     public GameObject keyHole;
     public float radius = 1.35f;
     private bool isOnTarget = false;
+    private GameObject currentTarget=null;
+    public Rigidbody2D rb;
 
     void Start()
     {
-        float angle = Random.Range(0, 360);
-        float x = Mathf.Cos(angle) * radius;
-        float y = Mathf.Sin(angle) * radius;
-        Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
+        currentTarget = GameObject.FindGameObjectWithTag("target");
+        SpawanTargetAtRandomPos();
     }
 
     // Update is called once per frame
@@ -30,6 +30,11 @@ public class PlayerController : MonoBehaviour
             if (isOnTarget)
             {
                 Debug.Log("you got it");
+
+                currentTarget.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.position.x,transform.position.y));
+                
+                //Destroy(currentTarget);
+                SpawanTargetAtRandomPos();
             }
         }
     }
@@ -48,5 +53,13 @@ public class PlayerController : MonoBehaviour
         {
             isOnTarget = false;
         }
+    }
+
+    void SpawanTargetAtRandomPos()
+    {
+        float angle = Random.Range(0, 360);
+        float x = Mathf.Cos(angle) * radius;
+        float y = Mathf.Sin(angle) * radius;
+        currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
     }
 }

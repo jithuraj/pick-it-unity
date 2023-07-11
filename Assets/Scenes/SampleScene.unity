@@ -239,9 +239,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e388eeb0f389040498287bf9d1533f37, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 50
+  speed: 100
   keyHole: {fileID: 7162055875158080833, guid: b74a18271270da745baa1869b8655374, type: 3}
   radius: 1.35
+  rb: {fileID: 442197114}
 --- !u!212 &442197111
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -611,6 +612,10 @@ PrefabInstance:
     - target: {fileID: 4796108363933385636, guid: 61a945f7ebe169b4a9bfbf964c9a4651, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5438456481186861009, guid: 61a945f7ebe169b4a9bfbf964c9a4651, type: 3}
+      propertyPath: speed
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 6853573783982091881, guid: 61a945f7ebe169b4a9bfbf964c9a4651, type: 3}
       propertyPath: m_Name
