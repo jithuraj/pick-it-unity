@@ -34,7 +34,7 @@ public class PlayerController : MonoBehaviour
                 GetComponent<SpriteRenderer>().flipX = !isRotatingClockwise;
             if (isOnTarget)
             {
-                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position*100-prevPlayerPos*100)*50);
+                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position*100-prevPlayerPos*100)*10);
                 currentTarget.GetComponent<Rigidbody2D>().AddTorque(5);
                 //Destroy(currentTarget);
                 SpawanTargetAtRandomPos();
@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
     void SpawanTargetAtRandomPos()
     {
+
         float angle = Random.Range(0, 360);
         float x = Mathf.Cos(angle) * radius;
         float y = Mathf.Sin(angle) * radius;
