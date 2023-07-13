@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
     private bool isOnTarget = false;
     private GameObject currentTarget=null;
     public Rigidbody2D rb;
+    private Vector3 prevPlayerPos;
+    private int count =10;
 
     void Start()
     {
@@ -22,6 +24,15 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (count < 0)
+        {
+            count = 10;
+            prevPlayerPos = transform.position;
+        }
+        else
+        {
+            count--;
+        }
         transform.RotateAround(new Vector2(0, 0), Vector3.forward, isRotatingClockwise ? speed * Time.deltaTime : -speed * Time.deltaTime);
 
         if ((Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended) ||(Input.GetKeyDown(KeyCode.Space)))
@@ -29,10 +40,17 @@ public class PlayerController : MonoBehaviour
             isRotatingClockwise = !isRotatingClockwise;
             if (isOnTarget)
             {
-                Debug.Log("you got it");
+                Debug.Log(""+transform.up);
 
-                currentTarget.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.position.x,transform.position.y));
-                
+                //currentTarget.GetComponent<Rigidbody2D>().gravityScale = 1;
+                //Vector3 dir = (transform.position - Vector3.zero).normalized
+
+                //currentTarget.GetComponent<Rigidbody2D>().AddForce(transform.up.Normalize()) ;
+                //currentTarget.GetComponent<Rigidbody2D>().AddForce((prevPlayerPos * 100));
+                //currentTarget.GetComponent<Rigidbody2D>().AddForce(new Vector2(prevPlayerPos.x*100,prevPlayerPos.y));
+                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position*100-prevPlayerPos*100)*10);
+
+
                 //Destroy(currentTarget);
                 SpawanTargetAtRandomPos();
             }
