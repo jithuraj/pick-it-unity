@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     public float speed = 100;
     private bool isRotatingClockwise = true;
     public GameObject keyHole;
-    public float radius = 1.35f;
+    private float radius = 1.30f;
     private bool isOnTarget = false;
     private GameObject currentTarget=null;
     public Rigidbody2D rb;
@@ -29,9 +29,13 @@ public class PlayerController : MonoBehaviour
         if ((Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended) ||(Input.GetKeyDown(KeyCode.Space)))
         {
             isRotatingClockwise = !isRotatingClockwise;
+
+            // Rotate player
+                GetComponent<SpriteRenderer>().flipX = !isRotatingClockwise;
             if (isOnTarget)
             {
-                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position*100-prevPlayerPos*100)*100);
+                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position*100-prevPlayerPos*100)*50);
+                currentTarget.GetComponent<Rigidbody2D>().AddTorque(5);
                 //Destroy(currentTarget);
                 SpawanTargetAtRandomPos();
             }
