@@ -10,9 +10,10 @@ public class PlayerController : MonoBehaviour
     public GameObject keyHole;
     private float radius = 1.30f;
     private bool isOnTarget = false;
-    private GameObject currentTarget=null;
+    private GameObject currentTarget = null;
     public Rigidbody2D rb;
     private Vector3 prevPlayerPos;
+    public int torque;
 
     void Start()
     {
@@ -20,33 +21,72 @@ public class PlayerController : MonoBehaviour
         SpawanTargetAtRandomPos();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
+    {
+        HandleInput();
+
+    }
+    void FixedUpdate()
+    {
+        StorePreviousPos();
+        RotatePlayer();
+
+    }
+
+    void StorePreviousPos()
     {
         prevPlayerPos = transform.position;
+    }
+
+    void RotatePlayer()
+    {
         transform.RotateAround(new Vector2(0, 0), Vector3.forward, isRotatingClockwise ? speed * Time.deltaTime : -speed * Time.deltaTime);
+    }
 
-        if ((Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended) ||(Input.GetKeyDown(KeyCode.Space)))
+    void HandleInput()
+    {
+        if (OnTouchInput() || OnKeyboardInput())
         {
-            isRotatingClockwise = !isRotatingClockwise;
+            ReversePlayerDirection();
 
-            // Rotate player
-                GetComponent<SpriteRenderer>().flipX = !isRotatingClockwise;
             if (isOnTarget)
             {
-                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position*100-prevPlayerPos*100)*10);
-                currentTarget.GetComponent<Rigidbody2D>().AddTorque(5);
-                //Destroy(currentTarget);
+                // Add force to move the ball tangentially
+                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position * 100 - prevPlayerPos * 100) * 10);
+
+                // Add torque to spin the ball
+                currentTarget.GetComponent<Rigidbody2D>().AddTorque(torque);
+
+                // Remove collider component of ball
+                Destroy(currentTarget.GetComponent<Collider2D>());
+
+                // Spawn new ball at random position
                 SpawanTargetAtRandomPos();
             }
         }
+    }
+
+    void ReversePlayerDirection()
+    {
+        isRotatingClockwise = !isRotatingClockwise;
+        GetComponent<SpriteRenderer>().flipX = !isRotatingClockwise;
+    }
+
+    bool OnTouchInput()
+    {
+        return (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Ended);
+    }
+
+    bool OnKeyboardInput()
+    {
+        return (Input.GetKeyDown(KeyCode.Space));
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("target"))
         {
-            isOnTarget=true;
+            isOnTarget = true;
         }
     }
 
@@ -60,10 +100,23 @@ public class PlayerController : MonoBehaviour
 
     void SpawanTargetAtRandomPos()
     {
-
-        float angle = Random.Range(0, 360);
+        float angle = GenerateAngleWithOffset();
+        Debug.Log("diff                            " + (Mathf.Round(angle - transform.rotation.eulerAngles.z)));
         float x = Mathf.Cos(angle) * radius;
         float y = Mathf.Sin(angle) * radius;
         currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
+    }
+
+    float GenerateAngleWithOffset()
+    {
+        float angleOffset = 60;
+        float playerRotation = transform.rotation.eulerAngles.z;
+        float angle = Random.Range(0, 360);
+        if(angle > playerRotation-angleOffset && angle < playerRotation + angleOffset)
+        {
+           angle = GenerateAngleWithOffset();
+        }
+
+        return angle;
     }
 }
