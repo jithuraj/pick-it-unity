@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     public int torque;
     public GameObject scoreControllerObject;
     private ScoreController scoreController;
+    private bool isKicked = false;
 
     void Start()
     {
@@ -64,6 +65,8 @@ public class PlayerController : MonoBehaviour
 
     void OnSuccess()
     {
+        isKicked=true;
+
         // Add score
         scoreController.AddScore();
 
@@ -101,6 +104,7 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("target"))
         {
             isOnTarget = true;
+            isKicked = false;
         }
     }
 
@@ -109,7 +113,16 @@ public class PlayerController : MonoBehaviour
         if (collision.CompareTag("target"))
         {
             isOnTarget = false;
+            if(isKicked==false)
+            {
+                LostTarget();
+            }
         }
+    }
+
+    void LostTarget()
+    {
+        scoreController.DecreaseLife();
     }
 
     void SpawanTargetAtRandomPos()
