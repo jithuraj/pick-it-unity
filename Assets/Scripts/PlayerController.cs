@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
         currentTarget = GameObject.FindGameObjectWithTag("target");
         scoreController = scoreControllerObject.GetComponent<ScoreController>();
         SpawanTargetAtRandomPos();
+        scoreController.ShowHighScore();
     }
 
     private void Update()
@@ -114,7 +115,7 @@ public class PlayerController : MonoBehaviour
     void SpawanTargetAtRandomPos()
     {
         float angle = GenerateAngleWithOffset();
-        Debug.Log("diff                            " + (Mathf.Round(angle - transform.rotation.eulerAngles.z)));
+        //Debug.Log("diff                            " + (Mathf.Round(angle - transform.rotation.eulerAngles.z)));
         float x = Mathf.Cos(angle) * radius;
         float y = Mathf.Sin(angle) * radius;
         currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
