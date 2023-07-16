@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -14,10 +16,13 @@ public class PlayerController : MonoBehaviour
     public Rigidbody2D rb;
     private Vector3 prevPlayerPos;
     public int torque;
+    public GameObject scoreControllerObject;
+    private ScoreController scoreController;
 
     void Start()
     {
         currentTarget = GameObject.FindGameObjectWithTag("target");
+        scoreController = scoreControllerObject.GetComponent<ScoreController>();
         SpawanTargetAtRandomPos();
     }
 
@@ -51,19 +56,27 @@ public class PlayerController : MonoBehaviour
 
             if (isOnTarget)
             {
-                // Add force to move the ball tangentially
-                currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position * 100 - prevPlayerPos * 100) * 10);
-
-                // Add torque to spin the ball
-                currentTarget.GetComponent<Rigidbody2D>().AddTorque(torque);
-
-                // Remove collider component of ball
-                Destroy(currentTarget.GetComponent<Collider2D>());
-
-                // Spawn new ball at random position
-                SpawanTargetAtRandomPos();
+                OnSuccess();
             }
         }
+    }
+
+    void OnSuccess()
+    {
+        // Add score
+        scoreController.AddScore();
+
+        // Add force to move the ball tangentially
+        currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position * 100 - prevPlayerPos * 100) * 10);
+
+        // Add torque to spin the ball
+        currentTarget.GetComponent<Rigidbody2D>().AddTorque(torque);
+
+        // Remove collider component of ball
+        Destroy(currentTarget.GetComponent<Collider2D>());
+
+        // Spawn new ball at random position
+        SpawanTargetAtRandomPos();
     }
 
     void ReversePlayerDirection()
