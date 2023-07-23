@@ -37,7 +37,7 @@ public class ScoreController : MonoBehaviour
         lifeComponent.text = life.ToString();
         if(life <= 0)
         {
-            gameOverMenu.Show();
+            //gameOverMenu.Show();
         }
     }
 

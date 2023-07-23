@@ -755,6 +755,7 @@ MonoBehaviour:
   rb: {fileID: 442197114}
   torque: 300
   scoreControllerObject: {fileID: 1838506177}
+  pickableHeart: {fileID: 5738574267401425041, guid: 08063f6483dd12b45a44c7b2dc839515, type: 3}
 --- !u!212 &442197111
 SpriteRenderer:
   m_ObjectHideFlags: 0

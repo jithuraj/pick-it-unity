@@ -4,6 +4,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,10 @@ public class PlayerController : MonoBehaviour
     public GameObject scoreControllerObject;
     private ScoreController scoreController;
     private bool isKicked = false;
+    private float r;
+
+    public GameObject pickableHeart;
+    private GameObject currentlySpawnedHeart;
 
     void Start()
     {
@@ -48,6 +53,7 @@ public class PlayerController : MonoBehaviour
     void RotatePlayer()
     {
         transform.RotateAround(new Vector2(0, 0), Vector3.forward, isRotatingClockwise ? speed * Time.deltaTime : -speed * Time.deltaTime);
+        transform.forward = Vector3.Slerp(Vector3.forward, prevPlayerPos, Time.deltaTime);
     }
 
     void HandleInput()
@@ -59,8 +65,20 @@ public class PlayerController : MonoBehaviour
             if (isOnTarget)
             {
                 OnSuccess();
+                SpawnHeartAtRandomPos();
             }
         }
+    }
+
+    void SpawnHeartAtRandomPos()
+    {
+        float angle = GenerateAngleWithOffset();
+        float x = Mathf.Cos(360) * radius;
+        float y = Mathf.Sin(360) * radius;
+        currentlySpawnedHeart = Instantiate(pickableHeart, new Vector2(x, y), Quaternion.identity);
+        Debug.Log(angle);
+        //currentlySpawnedHeart.transform.RotateAround(new Vector2(0, 0), Vector3.up,angle);
+
     }
 
     void OnSuccess()
@@ -128,7 +146,6 @@ public class PlayerController : MonoBehaviour
     void SpawanTargetAtRandomPos()
     {
         float angle = GenerateAngleWithOffset();
-        //Debug.Log("diff                            " + (Mathf.Round(angle - transform.rotation.eulerAngles.z)));
         float x = Mathf.Cos(angle) * radius;
         float y = Mathf.Sin(angle) * radius;
         currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
