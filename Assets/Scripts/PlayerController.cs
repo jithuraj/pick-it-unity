@@ -20,6 +20,11 @@ public class PlayerController : MonoBehaviour
     private ScoreController scoreController;
     private bool isKicked = false;
 
+    private float angle;
+    [SerializeField] float rotateAmount;
+    [SerializeField] float rotateAngle;
+    private float prevAngle = 0;
+
     void Start()
     {
         currentTarget = GameObject.FindGameObjectWithTag("target");
@@ -32,11 +37,31 @@ public class PlayerController : MonoBehaviour
     {
         HandleInput();
 
+        float x = Mathf.Cos(angle) * radius;
+        float y = Mathf.Sin(angle) * radius;
+        transform.position = new Vector2(x, y);
+        //transform.eulerAngles = new Vector3(0,0, Vector3.Angle(prevPlayerPos,transform.position));
+        //currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
+        if(isRotatingClockwise)
+        {
+            transform.Rotate(new Vector3(0, 0, 1));
+            prevAngle = angle;
+            angle += rotateAngle;
+            Debug.Log("angle " + angle);
+
+        }
+        else
+        {
+            //angle = angle - 0.03f;
+            //transform.Rotate(new Vector3(0, 0, -0.03f));
+
+        }
+
     }
     void FixedUpdate()
     {
         StorePreviousPos();
-        RotatePlayer();
+        //RotatePlayer();
 
     }
 
@@ -122,7 +147,7 @@ public class PlayerController : MonoBehaviour
 
     void LostTarget()
     {
-        scoreController.DecreaseLife();
+        //scoreController.DecreaseLife();
     }
 
     void SpawanTargetAtRandomPos()
