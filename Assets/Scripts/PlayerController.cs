@@ -7,7 +7,6 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 100;
     private bool isRotatingClockwise = true;
     public GameObject keyHole;
     private float radius = 1.30f;
@@ -20,10 +19,11 @@ public class PlayerController : MonoBehaviour
     private ScoreController scoreController;
     private bool isKicked = false;
 
-    private float angle;
+    private float angle=1;
     [SerializeField] float rotateAmount;
     [SerializeField] float rotateAngle;
     private float prevAngle = 0;
+
 
     void Start()
     {
@@ -36,32 +36,12 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         HandleInput();
-
-        float x = Mathf.Cos(angle) * radius;
-        float y = Mathf.Sin(angle) * radius;
-        transform.position = new Vector2(x, y);
-        //transform.eulerAngles = new Vector3(0,0, Vector3.Angle(prevPlayerPos,transform.position));
-        //currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
-        if(isRotatingClockwise)
-        {
-            transform.Rotate(new Vector3(0, 0, 1));
-            prevAngle = angle;
-            angle += rotateAngle;
-            Debug.Log("angle " + angle);
-
-        }
-        else
-        {
-            //angle = angle - 0.03f;
-            //transform.Rotate(new Vector3(0, 0, -0.03f));
-
-        }
+        StorePreviousPos();
 
     }
     void FixedUpdate()
     {
-        StorePreviousPos();
-        //RotatePlayer();
+        RotatePlayer();
 
     }
 
@@ -72,7 +52,8 @@ public class PlayerController : MonoBehaviour
 
     void RotatePlayer()
     {
-        transform.RotateAround(new Vector2(0, 0), Vector3.forward, isRotatingClockwise ? speed * Time.deltaTime : -speed * Time.deltaTime);
+
+        transform.RotateAround(new Vector2(0, 0), Vector3.forward, isRotatingClockwise ? angle : -angle);
     }
 
     void HandleInput()
@@ -96,7 +77,7 @@ public class PlayerController : MonoBehaviour
         scoreController.AddScore();
 
         // Add force to move the ball tangentially
-        currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position * 100 - prevPlayerPos * 100) * 10);
+        currentTarget.GetComponent<Rigidbody2D>().AddForce((transform.position * 100 - prevPlayerPos * 100) * 100);
 
         // Add torque to spin the ball
         currentTarget.GetComponent<Rigidbody2D>().AddTorque(torque);
@@ -153,7 +134,6 @@ public class PlayerController : MonoBehaviour
     void SpawanTargetAtRandomPos()
     {
         float angle = GenerateAngleWithOffset();
-        //Debug.Log("diff                            " + (Mathf.Round(angle - transform.rotation.eulerAngles.z)));
         float x = Mathf.Cos(angle) * radius;
         float y = Mathf.Sin(angle) * radius;
         currentTarget = Instantiate(keyHole, new Vector2(x, y), Quaternion.identity);
